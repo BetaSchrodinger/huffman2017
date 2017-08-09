@@ -98,22 +98,18 @@ void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream&
         }
     }
 }
-
-void decodeData(ibitstream& input, HuffmanNode* encodingTree, ostream& output) {
-    int n = input.readBit();
-    if (n == -1 || encodingTree->one == nullptr) {
-        return;
+void decodeDataHelper(ibitstream& input, HuffmanNode* encodingTree, ostream& output, HuffmanNode* root) {
+    if (encodingTree->character != NOT_A_CHAR) {
+        output.put(encodingTree->character);
+        decodeDataHelper(input, root, output, root);
     }
-    else {
-       if (encodingTree->character != NOT_A_CHAR) {
-           output.put(encodingTree->character);
-       }
-       if (n == 0) {
-           decodeData(input, encodingTree->zero, output);
-       }
-       else {
-           decodeData(input, encodingTree->one, output);
-       }
+    int n = input.readBit();
+    if (n == -1) {
+        return;
+    } else if (n == 0) {
+           decodeDataHelper(input, encodingTree->zero, output, root);
+    } else {
+           decodeDataHelper(input, encodingTree->one, output, root);
     }
 }
 
