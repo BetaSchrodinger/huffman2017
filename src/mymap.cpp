@@ -32,7 +32,13 @@ int MyMap::get(int key) const {
 }
 
 bool MyMap::containsKey(int key) {
-  return false;
+    temp = hashFunction(key) % nBuckets;
+    if (buckets[temp] != nullptr) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 Vector<int> MyMap::keys() const {
