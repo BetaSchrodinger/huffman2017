@@ -17,18 +17,24 @@ void MyMap::put(int key, int value) {
     newK.key = key;
     newK.value = value;
     newK.next = nullptr;
-    key = hashFunction(key) % nBuckets;
-    if (buckets[key] != nullptr) {
-        buckets[key]->value = value;
+    int tamp = hashFunction(key) % nBuckets;
+    if (buckets[temp] != nullptr) {
+        buckets[temp]->value = value;
     }
     else {
-        buckets[key] = *newK;
+        buckets[temp] = *newK;
     }
     nElems ++;
 }
 
 int MyMap::get(int key) const {
-  return 1;
+  int MyMap::get(int key) const {
+    int tempIndex = hashFunction(key) % nBuckets;
+    if (buckets[tempIndex] == nullptr) throw ("The key is not existed in the map yet!");
+    else {
+        int returnValue = buckets[tempIndex]->value;
+        return returnValue;
+    }
 }
 
 bool MyMap::containsKey(int key) {
