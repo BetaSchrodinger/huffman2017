@@ -7,7 +7,7 @@ MyMap::MyMap() {
     head.key = -1;
     head.value = -1;
     head.next = nullptr;
-    nElem = 0;
+    nElems = 0;
 }
 
 MyMap::~MyMap() {
