@@ -13,7 +13,18 @@ MyMap::~MyMap() {
 }
 
 void MyMap::put(int key, int value) {
-  return;
+      struct key_val_pair newK;
+    newK.key = key;
+    newK.value = value;
+    newK.next = nullptr;
+    key = hashFunction(key) % nBuckets;
+    if (buckets[key] != nullptr) {
+        buckets[key]->value = value;
+    }
+    else {
+        buckets[key] = *newK;
+    }
+    nElems ++;
 }
 
 int MyMap::get(int key) const {
