@@ -5,12 +5,20 @@
 
 #include "encoding.h"
 #include "mymap.h"
-// TODO: include any other headers you need
+#include "bitstream.h"
 
 MyMap buildFrequencyTable(istream& input) {
-    // TODO: implement this function
-    MyMap freqTable;   // this is just a placeholder so it will compile
-    return freqTable;          // this is just a placeholder so it will compile
+    MyMap frequencyTable;
+    int f [257] = {};
+    int c = input.get();
+    while (c != -1) {
+        f[c] += 1;
+    }
+    for (int i = 0; i < 257; i ++) {
+        frequencyTable.put(i, f[i]);
+    }
+    frequencyTable.put(257, 1);
+    return frequencyTable;
 }
 
 HuffmanNode* buildEncodingTree(const MyMap& freqTable) {
