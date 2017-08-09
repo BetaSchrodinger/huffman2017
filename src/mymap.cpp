@@ -8,6 +8,7 @@ MyMap::MyMap() {
     head.value = -1;
     head.next = nullptr;
     nBuckets = 257;
+    buckets = createBucketArray(nBuckets);
     nElems = 0;
 }
 
