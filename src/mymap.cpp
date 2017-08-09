@@ -9,7 +9,7 @@ MyMap::MyMap() {
 }
 
 MyMap::~MyMap() {
-
+    delete [] buckets;
 }
 
 void MyMap::put(int key, int value) {
