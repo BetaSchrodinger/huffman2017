@@ -3,10 +3,6 @@
 using namespace std;
 
 MyMap::MyMap() {
-    struct key_val_pair head;
-    head.key = -1;
-    head.value = -1;
-    head.next = nullptr;
     nBuckets = 257;
     buckets = createBucketArray(nBuckets);
     nElems = 0;
