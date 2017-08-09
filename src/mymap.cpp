@@ -3,54 +3,52 @@
 using namespace std;
 
 MyMap::MyMap() {
-    nBuckets = 257;
+    nBuckets = 257; //ASCII including the extended ones, have total of 255 characters
     buckets = createBucketArray(nBuckets);
     nElems = 0;
 }
 
 MyMap::~MyMap() {
-    delete [] buckets;
+    for (int i=0; i < nBuckets; i++) {
+        if (buckets[i] != nullptr) {
+            delete buckets[i];
+            buckets[i] = nullptr;
+        }
+    }
 }
 
 void MyMap::put(int key, int value) {
-    struct key_val_pair newK;
-    newK.key = key;
-    newK.value = value;
-    newK.next = nullptr;
+    key_val_pair* newK = new key_val_pair;
+    newK->key = key;
+    newK->value = value;
+    newK->next = nullptr;
     int temp = hashFunction(key) % nBuckets;
     if (buckets[temp] != nullptr) {
         buckets[temp]->value = value;
     }
     else {
-        buckets[temp] = &newK;
+        buckets[temp] = newK;
     }
     nElems ++;
 }
 
 int MyMap::get(int key) const {
-    int tempIndex = hashFunction(key) % nBuckets;
-    if (buckets[tempIndex] == nullptr) throw ("The key is not existed in the map yet!");
-    else {
-        int returnValue = buckets[tempIndex]->value;
-        return returnValue;
-    }
+    int temp = hashFunction(key) % nBuckets;
+    if (buckets[temp] == nullptr) throw ("The key is not existed in the map yet!");
+    else return buckets[temp]->value;
 }
 
 bool MyMap::containsKey(int key) {
     int temp = hashFunction(key) % nBuckets;
-    if (buckets[temp] != nullptr) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    if (buckets[temp] != nullptr) return true;
+    else return false;
 }
 
 Vector<int> MyMap::keys() const {
      Vector<int> keys;
      for (int i = 0; i < nBuckets; i++ ) {
          if (buckets[i] != nullptr) {
-             keys.add(i);
+             keys.add(buckets[i]->key);
          }
      }
      return keys;
