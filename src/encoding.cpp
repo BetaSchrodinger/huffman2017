@@ -8,17 +8,21 @@
 #include "bitstream.h"
 
 MyMap buildFrequencyTable(istream& input) {
-    MyMap frequencyTable;
-    int f [257] = {};
-    int c = input.get();
-    while (c != -1) {
-        f[c] += 1;
+    MyMap freqTable;
+    int character = input.get();
+    while (character != -1) {
+        //read the file til the end
+        if (!freqTable.containsKey(character)) {
+            //if the character is not in the map, put it in the map and set the count to 1
+            freqTable.put(character, 1);
+        }else {
+            //if the charcter is in the map already, take out the count and plus 1 and put it back
+            int preCount = freqTable.get(character);
+            preCount += 1;
+            freqTable.put(character, preCount);
+        }
     }
-    for (int i = 0; i < 257; i ++) {
-        frequencyTable.put(i, f[i]);
-    }
-    frequencyTable.put(257, 1);
-    return frequencyTable;
+    return freqTable;
 }
 
 HuffmanNode* buildEncodingTree(const MyMap& freqTable) {
