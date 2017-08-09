@@ -1,4 +1,4 @@
-﻿#include "mymap.h"
+#include "mymap.h"
 #include "vector.h"
 using namespace std;
 
@@ -13,22 +13,21 @@ MyMap::~MyMap() {
 }
 
 void MyMap::put(int key, int value) {
-      struct key_val_pair newK;
+    struct key_val_pair newK;
     newK.key = key;
     newK.value = value;
     newK.next = nullptr;
-    int tamp = hashFunction(key) % nBuckets;
+    int temp = hashFunction(key) % nBuckets;
     if (buckets[temp] != nullptr) {
         buckets[temp]->value = value;
     }
     else {
-        buckets[temp] = *newK;
+        buckets[temp] = &newK;
     }
     nElems ++;
 }
 
 int MyMap::get(int key) const {
-  int MyMap::get(int key) const {
     int tempIndex = hashFunction(key) % nBuckets;
     if (buckets[tempIndex] == nullptr) throw ("The key is not existed in the map yet!");
     else {
@@ -38,7 +37,7 @@ int MyMap::get(int key) const {
 }
 
 bool MyMap::containsKey(int key) {
-    temp = hashFunction(key) % nBuckets;
+    int temp = hashFunction(key) % nBuckets;
     if (buckets[temp] != nullptr) {
         return true;
     }
