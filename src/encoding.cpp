@@ -101,7 +101,7 @@ void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream&
 
 void decodeData(ibitstream& input, HuffmanNode* encodingTree, ostream& output) {
     int n = input.readBit();
-    if (n == -1) {
+    if (n == -1 || encodingTree->one == nullptr) {
         return;
     }
     else {
