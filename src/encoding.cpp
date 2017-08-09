@@ -1,24 +1,29 @@
-// This is the CPP file you will edit and turn in.
-// Also remove these comments here and add your own, along with
-// comments on every function and on complex code sections.
-// TODO: remove this comment header
 
 #include "encoding.h"
 #include "mymap.h"
-#include "bitstream.h"
+#include "pqueue.h"
+
 
 MyMap buildFrequencyTable(istream& input) {
-    MyMap frequencyTable;
-    int f [257] = {};
-    int c = input.get();
-    while (c != -1) {
-        f[c] += 1;
+    MyMap freqTable;
+    int character = input.get();
+    while (!input.eof()) {
+        //read the file til the end
+        if (!freqTable.containsKey(character)) {
+            //if the character is not in the map, put it in the map and set the count to 1
+            freqTable.put(character, 1);
+            character = input.get();
+        }else {
+            //if the charcter is in the map already, take out the count and plus 1 and put it back
+            int count = freqTable.get(character);
+            count += 1;
+            freqTable.put(character, count);
+            character = input.get();
+        }
     }
-    for (int i = 0; i < 257; i ++) {
-        frequencyTable.put(i, f[i]);
-    }
-    frequencyTable.put(257, 1);
-    return frequencyTable;
+    //now we have to deal with EOF
+    freqTable.put(256, 1);
+    return freqTable;
 }
 
 HuffmanNode* buildEncodingTree(const MyMap& freqTable) {
