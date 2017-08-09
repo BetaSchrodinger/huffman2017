@@ -22,8 +22,23 @@ MyMap buildFrequencyTable(istream& input) {
 }
 
 HuffmanNode* buildEncodingTree(const MyMap& freqTable) {
-    // TODO: implement this function
-    return NULL;   // this is just a placeholder so it will compile
+    PriorityQueue<HuffmanNode*> freqList;
+    Vector<int>keys = freqTable.keys();
+    for (int key:keys) {
+        HuffmanNode *charNode = new HuffmanNode;
+        charNode->character = key;
+        charNode->count = freqTable.get(key);
+        freqList.enqueue(charNode, freqTable.get(key));
+    }
+    //now we have a priorityqueue with nodes(storing the char) sorted from the least frequent to the most frequent
+    while (!(freqList.size() == 1 && freqList.peek()->character == NOT_A_CHAR)) {
+        //if the queue has not onl
+        HuffmanNode* curr;
+        curr->zero = freqList.dequeue();
+        curr->one = freqList.dequeue();
+        freqList.enqueue(curr, curr->count);
+    }
+    return freqList.dequeue();
 }
 
 Map<int, string> buildEncodingMap(HuffmanNode* encodingTree) {
