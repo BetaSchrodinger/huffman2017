@@ -100,7 +100,21 @@ void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream&
 }
 
 void decodeData(ibitstream& input, HuffmanNode* encodingTree, ostream& output) {
-    // TODO: implement this function
+    int n = input.readBit();
+    if (n == -1) {
+        return;
+    }
+    else {
+       if (encodingTree->character != NOT_A_CHAR) {
+           output.put(encodingTree->character);
+       }
+       if (n == 0) {
+           decodeData(input, encodingTree->zero, output);
+       }
+       else {
+           decodeData(input, encodingTree->one, output);
+       }
+    }
 }
 
 void compress(istream& input, obitstream& output) {
