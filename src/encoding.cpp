@@ -1,11 +1,7 @@
-// This is the CPP file you will edit and turn in.
-// Also remove these comments here and add your own, along with
-// comments on every function and on complex code sections.
-// TODO: remove this comment header
-
 #include "encoding.h"
 #include "mymap.h"
 #include "bitstream.h"
+#include "pqueue.h"
 
 MyMap buildFrequencyTable(istream& input) {
     MyMap frequencyTable;
