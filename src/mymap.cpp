@@ -43,6 +43,11 @@ bool MyMap::containsKey(int key) {
 
 Vector<int> MyMap::keys() const {
      Vector<int> keys;
+     for (int i = 0; i < nBuckets; i++ ) {
+         if (buckets[i] != nullptr) {
+             keys.add(i);
+         }
+     }
      return keys;
 }
 
