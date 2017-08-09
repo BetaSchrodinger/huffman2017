@@ -1,7 +1,7 @@
 #include "encoding.h"
 #include "mymap.h"
 #include "pqueue.h"
-
+void decodeDataHelper(ibitstream &input, HuffmanNode *encodingTree, ostream &output, HuffmanNode *root);
 
 MyMap buildFrequencyTable(istream& input) {
     MyMap freqTable;
@@ -81,6 +81,7 @@ void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream&
     int currChar = input.get();
     while (!input.eof()) {
         for (char bit: encodingMap[currChar]) {
+            //traverse through the
             if (bit == '0') {
                 output.writeBit(0);
             }else if (bit == '1') {
@@ -97,6 +98,11 @@ void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream&
             output.writeBit(1);
         }
     }
+}
+
+void decodeData(ibitstream& input, HuffmanNode* encodingTree, ostream& output) {
+    HuffmanNode* root = encodingTree;
+    decodeDataHelper(input, encodingTree, output, root);
 }
 
 void decodeDataHelper(ibitstream& input, HuffmanNode* encodingTree, ostream& output, HuffmanNode* root) {
@@ -118,9 +124,8 @@ void decodeDataHelper(ibitstream& input, HuffmanNode* encodingTree, ostream& out
         }
     }
 }
-
 void compress(istream& input, obitstream& output) {
-    // TODO: implement this function
+
 }
 
 void decompress(ibitstream& input, ostream& output) {
