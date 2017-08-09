@@ -7,6 +7,7 @@ MyMap::MyMap() {
     head.key = -1;
     head.value = -1;
     head.next = nullptr;
+    nBuckets = 200;
     nElems = 0;
 }
 
