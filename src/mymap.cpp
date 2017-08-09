@@ -24,9 +24,9 @@ void MyMap::put(int key, int value) {
     newK->next = nullptr;
     int temp = hashFunction(key) % nBuckets;
     if (buckets[temp] != nullptr) {
+        buckets[temp]->key = key;
         buckets[temp]->value = value;
-    }
-    else {
+    }else {
         buckets[temp] = newK;
     }
     nElems ++;
