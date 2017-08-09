@@ -36,26 +36,33 @@ HuffmanNode* buildEncodingTree(const MyMap& freqTable) {
     }
     //now we have a priorityqueue with nodes(storing the char) sorted from the least frequent to the most frequent
     while (!(freqList.size() == 1 && freqList.peek()->character == NOT_A_CHAR)) {
-        //if the queue has not only the root
+        //if the queue has not only the root, create a new node and give it 1 or 2 branches
         HuffmanNode* curr = new HuffmanNode;
         curr->zero = freqList.dequeue();
+        //the new node may have only one branch if there's only one character in the queue
         if (freqList.size() > 0) {curr->one = freqList.dequeue();}
-        curr->count = curr->zero->count + curr->one->count;
-        freqList.enqueue(curr, curr->count);
+
+        curr->count = curr->zero->count + curr->one->count; //the priority of the new node is the sum of its branches
+        freqList.enqueue(curr, curr->count); //enqueue the new node
     }
     return freqList.dequeue();
 }
 
 void buildEncodingMap(Map<int, string> &encodingMap, HuffmanNode* temp, string value) {
+    //a helper function to recursively traverse the encodingTree
     if (temp->zero == nullptr && temp->one == nullptr) {
+        //base case: if the temp is pointing to a leaf, map the leaf
         encodingMap[temp->character] = value;
         return;
+
     }else {
         if (temp->zero != nullptr) {
             buildEncodingMap(encodingMap, temp->zero, value + "0");
+            //add 0 every time traverse down the left branches
         }
         if (temp->one != nullptr) {
             buildEncodingMap(encodingMap, temp->one, value + "1");
+            //add 0 every time traverse down the right branches
         }
     }
     return;
@@ -65,12 +72,31 @@ Map<int, string> buildEncodingMap(HuffmanNode* encodingTree) {
     Map<int, string> encodingMap;
     HuffmanNode* temp = encodingTree;
     string value = "";
-    buildEncodingMap(encodingMap, temp, value);
+    //initiate value for the helper function
+    buildEncodingMap(encodingMap, temp, value);//helper function
     return encodingMap;
 }
 
 void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream& output) {
-    // TODO: implement this function
+    int currChar = input.get();
+    while (!input.eof()) {
+        for (char bit: encodingMap[currChar]) {
+            if (bit == '0') {
+                output.writeBit(0);
+            }else if (bit == '1') {
+                output.writeBit(1);
+            }
+        }
+        currChar = input.get();
+    }
+    //deal with EOF
+    for (char bit: encodingMap[256]) {
+        if (bit == '0') {
+            output.writeBit(0);
+        }else if (bit == '1') {
+            output.writeBit(1);
+        }
+    }
 }
 
 void decodeData(ibitstream& input, HuffmanNode* encodingTree, ostream& output) {
