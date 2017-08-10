@@ -136,9 +136,17 @@ void compress(istream& input, obitstream& output) {
 }
 
 void decompress(ibitstream& input, ostream& output) {
-    // TODO: implement this function
+    MyMap freqTable;
+    input >> freqTable;
+    HuffmanNode* encodingTree = buildEncodingTree(freqTable);
+    decodeData(input, encodingTree, output);
 }
 
 void freeTree(HuffmanNode* node) {
-    // TODO: implement this function
+    //give back the memory held by the encodingTree
+    if (node != nullptr) return;
+        freeTree(node->zero);
+        freeTree(node->one);
+        delete node;
+        node = nullptr;
 }
