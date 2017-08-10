@@ -1,3 +1,7 @@
+//Assignment: Huffman Coding
+//Name: Yuhao Dong
+//Pair programmer: Dehao Tu
+//Description: Huffman coding is a systematic way of compressing files
 #include "encoding.h"
 #include "mymap.h"
 #include "pqueue.h"
@@ -137,16 +141,16 @@ void compress(istream& input, obitstream& output) {
 
 void decompress(ibitstream& input, ostream& output) {
     MyMap freqTable;
-    input >> freqTable; //take freqTable from the input stream
+    input >> freqTable;
     HuffmanNode* encodingTree = buildEncodingTree(freqTable);
     decodeData(input, encodingTree, output);
 }
 
 void freeTree(HuffmanNode* node) {
     //give back the memory held by the encodingTree
-    if (node != nullptr) return;
-        freeTree(node->zero);
-        freeTree(node->one);
-        delete node;
-        node = nullptr;
+    if (node == nullptr) return;
+    freeTree(node->zero);
+    freeTree(node->one);
+    delete node;
+    node = nullptr;
 }
