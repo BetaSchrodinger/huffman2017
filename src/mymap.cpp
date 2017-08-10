@@ -3,8 +3,8 @@
 using namespace std;
 
 MyMap::MyMap() {
-    nBuckets = 257; //ASCII including the extended ones, have total of 255 characters
-    buckets = createBucketArray(nBuckets);
+    nBuckets = 257; //ASCII including the extended ones, have total of 256 characters, plus EOF
+    buckets = createBucketArray(nBuckets); //initialize the array
     nElems = 0;
 }
 
@@ -22,12 +22,12 @@ void MyMap::put(int key, int value) {
     newK->key = key;
     newK->value = value;
     newK->next = nullptr;
-    int temp = hashFunction(key) % nBuckets;
-    if (buckets[temp] != nullptr) {
-        buckets[temp]->key = key;
+    int temp = hashFunction(key) % nBuckets; //hash the key to determine where in the array does it go
+    if (buckets[temp] != nullptr) { //if this hashed value is new
         buckets[temp]->value = value;
-    }else {
-        buckets[temp] = newK;
+    }
+    else {
+        buckets[temp] = newK; //replace otherwise
     }
     nElems ++;
 }
@@ -47,7 +47,7 @@ bool MyMap::containsKey(int key) {
 Vector<int> MyMap::keys() const {
      Vector<int> keys;
      for (int i = 0; i < nBuckets; i++ ) {
-         if (buckets[i] != nullptr) {
+         if (buckets[i] != nullptr) { //append a key as long as it has a value in the array
              keys.add(buckets[i]->key);
          }
      }
