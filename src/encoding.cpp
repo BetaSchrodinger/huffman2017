@@ -137,7 +137,7 @@ void compress(istream& input, obitstream& output) {
 
 void decompress(ibitstream& input, ostream& output) {
     MyMap freqTable;
-    input >> freqTable;
+    input >> freqTable; //take freqTable from the input stream
     HuffmanNode* encodingTree = buildEncodingTree(freqTable);
     decodeData(input, encodingTree, output);
 }
