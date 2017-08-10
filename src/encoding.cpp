@@ -1,6 +1,6 @@
 //Assignment: Huffman Coding
-//Name: Yuhao Dong
-//Pair programmer: Dehao Tu
+//Name: Dehao Tu
+//Pair programmer: Yuhao Dong
 //Description: Huffman coding is a systematic way of compressing files
 #include "encoding.h"
 #include "mymap.h"
@@ -85,8 +85,10 @@ Map<int, string> buildEncodingMap(HuffmanNode* encodingTree) {
 void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream& output) {
     int currChar = input.get();
     while (!input.eof()) {
+        //before reaching the end, keep reading
         for (char bit: encodingMap[currChar]) {
-            //traverse through the
+            //e.g. we would have a char map to a string of "0" and "1", such as "0101"
+            //and we will convert that string to bit of 0 and 1
             if (bit == '0') {
                 output.writeBit(0);
             }else if (bit == '1') {
@@ -95,7 +97,7 @@ void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream&
         }
         currChar = input.get();
     }
-    //deal with EOF
+    //put EOF's bits at the end
     for (char bit: encodingMap[256]) {
         if (bit == '0') {
             output.writeBit(0);
@@ -107,13 +109,18 @@ void encodeData(istream& input, const Map<int, string>& encodingMap, obitstream&
 
 void decodeData(ibitstream& input, HuffmanNode* encodingTree, ostream& output) {
     HuffmanNode* root = encodingTree;
+    //we will need to keep track of the root of the encodingTree for the helper function
     decodeDataHelper(input, encodingTree, output, root);
 }
 
 void decodeDataHelper(ibitstream& input, HuffmanNode* encodingTree, ostream& output, HuffmanNode* root) {
+    //a recursive helper function to the decodeData
+    //It traverse the encodingTree according to the bits, once it reches a leaf, output the leaf
+
     if (encodingTree->character == NOT_A_CHAR) {
         int n = input.readBit();
         if (n == -1) {
+            //if reaches the end of the file, return
             return;
         } else if (n == 0) {
                decodeDataHelper(input, encodingTree->zero, output, root);
@@ -122,18 +129,28 @@ void decodeDataHelper(ibitstream& input, HuffmanNode* encodingTree, ostream& out
         }
     } else {
         if (encodingTree->character == PSEUDO_EOF) {
+            //It appears, in the practice, even when ibitstream reaches the end of the file
+            //the function will keep decoding the automatically added on 0s
+            //e.g. if I have 2 bits 01, and the system will add 0s to fillin the space --> 01000000
+            //if we don't ask the function to stop once reaches EOF, function will keep decode the place holder 0s,
+            //and produce extra output characters.
             return;
         }else {
         output.put(encodingTree->character);
         decodeDataHelper(input, root, output, root);
+        //once a character is print to the out put, we will keep decode the rest
+        //of the bits, and we will need to start traversing the encodingTree again from the root
         }
     }
 }
 void compress(istream& input, obitstream& output) {
+    /* basic 3 steps to convert input to a encodingMap */
     MyMap freqTable = buildFrequencyTable(input);
     HuffmanNode* encodingTree = buildEncodingTree(freqTable);
     Map<int, string> encodingMap = buildEncodingMap(encodingTree);
-    //now we have a map of every character to it's humman code
+    /*-------------------------------------------------*/
+
+    //we have to rewind to add the frequency map to the output's header
     rewindStream(input);
     output << freqTable;
     encodeData(input, encodingMap, output);
@@ -142,7 +159,9 @@ void compress(istream& input, obitstream& output) {
 void decompress(ibitstream& input, ostream& output) {
     MyMap freqTable;
     input >> freqTable;
+    //we assume the compressed file has header of it's frequency map
     HuffmanNode* encodingTree = buildEncodingTree(freqTable);
+    //based on that frequency map we reproduce the encodingTree
     decodeData(input, encodingTree, output);
 }
 
@@ -151,6 +170,7 @@ void freeTree(HuffmanNode* node) {
     if (node == nullptr) return;
     freeTree(node->zero);
     freeTree(node->one);
+    //reaching this place means the current node is a leaf, and delete the leaf
     delete node;
     node = nullptr;
 }
