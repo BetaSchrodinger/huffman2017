@@ -1,6 +1,7 @@
 #include "encoding.h"
 #include "mymap.h"
 #include "pqueue.h"
+#include "filelib.h"
 void decodeDataHelper(ibitstream &input, HuffmanNode *encodingTree, ostream &output, HuffmanNode *root);
 
 MyMap buildFrequencyTable(istream& input) {
@@ -125,7 +126,13 @@ void decodeDataHelper(ibitstream& input, HuffmanNode* encodingTree, ostream& out
     }
 }
 void compress(istream& input, obitstream& output) {
-
+    MyMap freqTable = buildFrequencyTable(input);
+    HuffmanNode* encodingTree = buildEncodingTree(freqTable);
+    Map<int, string> encodingMap = buildEncodingMap(encodingTree);
+    //now we have a map of every character to it's humman code
+    rewindStream(input);
+    output << freqTable;
+    encodeData(input, encodingMap, output);
 }
 
 void decompress(ibitstream& input, ostream& output) {
