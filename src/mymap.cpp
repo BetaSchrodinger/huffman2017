@@ -1,10 +1,13 @@
+//Assignment: Huffman Coding
+//Name: Yuhao Dong
+//Pair programmer: Dehao Tu
 #include "mymap.h"
 #include "vector.h"
 using namespace std;
 
 MyMap::MyMap() {
-    nBuckets = 257; //ASCII including the extended ones, have total of 256 characters, plus EOF
-    buckets = createBucketArray(nBuckets); //initialize the array
+    nBuckets = 100; //ASCII including the extended ones, have total of 255 characters
+    buckets = createBucketArray(nBuckets);
     nElems = 0;
 }
 
@@ -22,33 +25,73 @@ void MyMap::put(int key, int value) {
     newK->key = key;
     newK->value = value;
     newK->next = nullptr;
-    int temp = hashFunction(key) % nBuckets; //hash the key to determine where in the array does it go
-    if (buckets[temp] != nullptr) { //if this hashed value is new
-        buckets[temp]->value = value;
-    }
-    else {
-        buckets[temp] = newK; //replace otherwise
+    //create a new node contains key(character) and value(count)
+
+    int bucketKey = hashFunction(key) % nBuckets;
+
+    if (buckets[bucketKey] != nullptr) {
+        //if there's node/nodes in the bucket, add the new node to the linked list
+
+        /* -this part of function looks for the nodes with the key matches the input key - */
+        key_val_pair *temp = buckets[bucketKey];
+        //temp is used to traverse the linked list in bucket
+
+        while (temp != nullptr) {
+            //if there's a key is already exist, replace the key's value with the new input value
+            if (temp->key == key) {
+                temp->value = value;
+                return;
+            }else {
+                temp = temp->next;
+            }
+        }
+        /* ------------------------------------------------------------------------------ */
+        //if there's no exisiting key in the linked list matches the input key, add the new to the
+        //front of the linked list
+        newK->next = buckets[bucketKey];
+        buckets[bucketKey] = newK;
+    }else {
+        //if the bucket is empty, put the new node right in
+        buckets[bucketKey] = newK;
     }
     nElems ++;
 }
 
 int MyMap::get(int key) const {
-    int temp = hashFunction(key) % nBuckets;
-    if (buckets[temp] == nullptr) throw ("The key is not existed in the map yet!");
-    else return buckets[temp]->value;
+    int bucketKey = hashFunction(key) % nBuckets;
+    if (buckets[bucketKey] == nullptr) throw ("The key is not existed in the map yet!");
+    //if is no key in the map that matches the key, throw exception
+    else {
+        key_val_pair *temp = buckets[bucketKey];
+        //temp is used to traverse the linked list in bucket
+
+        while (temp != nullptr) {
+            if (temp->key == key) return temp->value;
+            temp = temp->next;
+        }
+        throw ("The key is not existed in the map yet!");
+    }
 }
 
 bool MyMap::containsKey(int key) {
-    int temp = hashFunction(key) % nBuckets;
-    if (buckets[temp] != nullptr) return true;
-    else return false;
+    int bucketKey = hashFunction(key) % nBuckets;
+    if (buckets[bucketKey] != nullptr) {
+        key_val_pair *temp = buckets[bucketKey];
+        while (temp != nullptr) {
+            if (temp->key == key) return true;
+            temp = temp->next;
+        }
+    }
+    return false;
 }
 
 Vector<int> MyMap::keys() const {
      Vector<int> keys;
-     for (int i = 0; i < nBuckets; i++ ) {
-         if (buckets[i] != nullptr) { //append a key as long as it has a value in the array
-             keys.add(buckets[i]->key);
+     for (int i = 0; i < nBuckets; i++) {
+         key_val_pair *temp = buckets[i];
+         while (temp != nullptr) {
+             keys.add(temp->key);
+             temp = temp->next;
          }
      }
      return keys;
