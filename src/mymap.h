@@ -1,3 +1,7 @@
+//Assignment: Huffman Coding
+//Name: Yuhao Dong
+//Pair programmer: Dehao Tu
+//FYI: nothing is changed in this file
 #pragma once
 
 #include "vector.h"
